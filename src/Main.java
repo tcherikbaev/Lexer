@@ -3,12 +3,9 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args)
     {
-        String input= """
-                config "num_users"=100
-                 config "num_requests"=100
-                update "nums_users"=200
-                compute "result"=%num_users +%num_requests
-                """;
+
+        String input = "config \"num_users\" = 100 config \"num_requests\" = 100 update \"nums_users\" = 200 compute \"result\" = %num_users + %num_requests";
+
 
         Lexer lexer=new Lexer(input);
         for(Lexer.Token token:lexer)

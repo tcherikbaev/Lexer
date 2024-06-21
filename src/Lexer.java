@@ -1,23 +1,19 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.spi.ToolProvider;
 
 public class Lexer implements Iterable<Lexer.Token> {
 
     private final String input;
-
     private final List<Token> tokens;
-
     private int current;
-    public Lexer(String input)
-    {
-        this.input=input;
-        this.tokens=new ArrayList<Token>();
-        this.current=0;
+
+    public Lexer(String input) {
+        this.input = input;
+        this.tokens = new ArrayList<>();
+        this.current = 0;
         tokenize();
     }
-
 
     private void tokenize() {
         while (current < input.length()) {
@@ -34,23 +30,17 @@ public class Lexer implements Iterable<Lexer.Token> {
                     current++;
                     break;
                 case '+':
-                    tokens.add(new Token(TokenType.OPERATOR, "+"));
-                    break;
                 case '-':
-                    tokens.add(new Token(TokenType.OPERATOR, "-"));
-                    break;
                 case '*':
-                    tokens.add(new Token(TokenType.OPERATOR, "*"));
-                    break;
                 case '/':
                     tokens.add(new Token(TokenType.OPERATOR, Character.toString(ch)));
                     current++;
                     break;
                 case '"':
                     tokens.add(new Token(TokenType.STRING, readString()));
-                    current++;
                     break;
                 case '%':
+                    current++; // Skip the leading '%'
                     tokens.add(new Token(TokenType.REFERENCES, readReference()));
                     break;
                 default:
@@ -66,23 +56,34 @@ public class Lexer implements Iterable<Lexer.Token> {
         }
     }
 
-    private TokenType deriveTokenType(String identifier) {
-        return switch (identifier)
-        {
-            case "config"->TokenType.CONFIG;
+    private String readString() {
+        StringBuilder builder = new StringBuilder();
+        current++; // Skip the opening quote
 
-            case "update"->TokenType.UPDATE;
-            case "compute"->TokenType.COMPUTE;
-            case "shows"->TokenType.SHOW;
-            case "configs"->TokenType.CONFIGS;
-            default->TokenType.IDENTIFIER;
-        };
+        while (current < input.length() && input.charAt(current) != '"') {
+            builder.append(input.charAt(current));
+            current++;
+        }
+
+        if (current < input.length() && input.charAt(current) == '"') {
+            current++; // Skip the closing quote
+        }
+
+        return builder.toString();
+    }
+
+    private String readReference() {
+        StringBuilder builder = new StringBuilder();
+        while (current < input.length() && isAlphanumeric(input.charAt(current))) {
+            builder.append(input.charAt(current));
+            current++;
+        }
+        return builder.toString();
     }
 
     private String readIdentifier() {
-        StringBuilder builder=new StringBuilder();
-        while (current<input.length() && isAlphanumeric(input.charAt(current)))
-        {
+        StringBuilder builder = new StringBuilder();
+        while (current < input.length() && isAlphanumeric(input.charAt(current))) {
             builder.append(input.charAt(current));
             current++;
         }
@@ -90,50 +91,35 @@ public class Lexer implements Iterable<Lexer.Token> {
     }
 
     private String readNumber() {
-        StringBuilder builder=new StringBuilder();
-        while (current<input.length() && isDigit(input.charAt(current)))
-        {
+        StringBuilder builder = new StringBuilder();
+        while (current < input.length() && isDigit(input.charAt(current))) {
             builder.append(input.charAt(current));
             current++;
         }
         return builder.toString();
     }
 
-    private String readReference()
-    {
-        StringBuilder stringBuilder=new StringBuilder();
-        while (current<input.length() &&  isAlphanumeric(input.charAt(current)))
-        {
-            stringBuilder.append(input.charAt(current));
-            current++;
-        }
-        return stringBuilder.toString() ;
+    private boolean isDigit(char c) {
+        return '0' <= c && c <= '9';
     }
 
-    private boolean isDigit(char c)
-    {
-        return '0'<=c && c<='9';
-    }
-    private boolean isAlphanumeric(char c)
-    {
-        return isAlpha(c) | isDigit(c);
+    private boolean isAlphanumeric(char c) {
+        return isAlpha(c) || isDigit(c);
     }
 
     private boolean isAlpha(char c) {
-        return ('a'<=c && c<='z') || ('A'<=c && c <='Z' || c=='_');
+        return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
     }
 
-    private String readString()
-    {
-        StringBuilder stringBuilder=new StringBuilder();
-
-        current++;
-        while (current<input.length() && input.charAt(current)!='"')
-        {
-            stringBuilder.append(input.charAt(current));
-            current++;
-        }
-        return stringBuilder.toString() ;
+    private TokenType deriveTokenType(String identifier) {
+        return switch (identifier) {
+            case "config" -> TokenType.CONFIG;
+            case "update" -> TokenType.UPDATE;
+            case "compute" -> TokenType.COMPUTE;
+            case "shows" -> TokenType.SHOW;
+            case "configs" -> TokenType.CONFIGS;
+            default -> TokenType.IDENTIFIER;
+        };
     }
 
     @Override
@@ -141,14 +127,13 @@ public class Lexer implements Iterable<Lexer.Token> {
         return tokens.iterator();
     }
 
-    static class Token
-    {
+    static class Token {
         final TokenType type;
         final String value;
-        Token(TokenType type,String value)
-        {
-        this.type=type;
-        this.value=value;
+
+        Token(TokenType type, String value) {
+            this.type = type;
+            this.value = value;
         }
 
         @Override
@@ -159,8 +144,14 @@ public class Lexer implements Iterable<Lexer.Token> {
                     '}';
         }
     }
-    enum TokenType
-    {
-        CONFIG,UPDATE,COMPUTE,SHOW,CONFIGS,STRING,NUMBER,IDENTIFIER,REFERENCES,ASSIGNMENT,OPERATOR
+
+    enum TokenType {
+        CONFIG, UPDATE, COMPUTE, SHOW, CONFIGS, STRING, NUMBER, IDENTIFIER, REFERENCES, ASSIGNMENT, OPERATOR
+    }
+
+    static class LexerException extends RuntimeException {
+        LexerException(String message) {
+            super(message);
+        }
     }
 }
