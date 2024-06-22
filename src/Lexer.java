@@ -146,7 +146,8 @@ public class Lexer implements Iterable<Lexer.Token> {
     }
 
     enum TokenType {
-        CONFIG, UPDATE, COMPUTE, SHOW, CONFIGS, STRING, NUMBER, IDENTIFIER, REFERENCES, ASSIGNMENT, OPERATOR
+        CONFIG, UPDATE, COMPUTE, SHOW, CONFIGS, STRING, NUMBER, IDENTIFIER, REFERENCES, ASSIGNMENT, OPERATOR;
+
     }
 
     static class LexerException extends RuntimeException {
