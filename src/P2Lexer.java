@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Iterator;
 import java.util.List;
 
@@ -85,6 +84,11 @@ public class P2Lexer implements  Iterable<P2Lexer.Token>{
                         String identifier=readIdentifier();
                         tokens.add(new Token(deriveTokenType(identifier), identifier));
                     }
+                    else
+                    {
+
+                        throw new LexerException("Unsupported character: " + ch);
+                    }
             }
         }
     }
@@ -144,7 +148,7 @@ public class P2Lexer implements  Iterable<P2Lexer.Token>{
         }
     }
     enum TokenType {
-        UPDATE, COMPUTE, SHOW, COMPARATOR,STRING, NUMBER, IDENTIFIER, REFERENCES, ASSIGNMENT, OPERATOR, LEFT_PARENTHESIS, RIGHT_PARENTHESIS, LEFT_BRACE, RIGHT_BRACE, OUTPUT, ENDLINE, CONDITION
+        COMPARATOR, NUMBER, IDENTIFIER,ASSIGNMENT, OPERATOR, LEFT_PARENTHESIS, RIGHT_PARENTHESIS, LEFT_BRACE, RIGHT_BRACE, OUTPUT, ENDLINE, CONDITION
     }
 
 

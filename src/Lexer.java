@@ -40,7 +40,7 @@ public class Lexer implements Iterable<Lexer.Token> {
                     tokens.add(new Token(TokenType.STRING, readString()));
                     break;
                 case '%':
-                    current++; // Skip the leading '%'
+                    current++;
                     tokens.add(new Token(TokenType.REFERENCES, readReference()));
                     break;
                 default:
