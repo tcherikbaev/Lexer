@@ -149,10 +149,4 @@ public class Lexer implements Iterable<Lexer.Token> {
         CONFIG, UPDATE, COMPUTE, SHOW, CONFIGS, STRING, NUMBER, IDENTIFIER, REFERENCES, ASSIGNMENT, OPERATOR;
 
     }
-
-    static class LexerException extends RuntimeException {
-        LexerException(String message) {
-            super(message);
-        }
-    }
 }
