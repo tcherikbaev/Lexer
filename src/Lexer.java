@@ -30,8 +30,17 @@ public class Lexer implements Iterable<Lexer.Token> {
                     current++;
                     break;
                 case '+':
+                    tokens.add(new Token(TokenType.ASSIGNMENT, "+"));
+                    current++;
+                    break;
                 case '-':
+                    tokens.add(new Token(TokenType.ASSIGNMENT, "-"));
+                    current++;
+                    break;
                 case '*':
+                    tokens.add(new Token(TokenType.ASSIGNMENT, "*"));
+                    current++;
+                    break;
                 case '/':
                     tokens.add(new Token(TokenType.OPERATOR, Character.toString(ch)));
                     current++;
@@ -65,9 +74,6 @@ public class Lexer implements Iterable<Lexer.Token> {
             current++;
         }
 
-        if (current < input.length() && input.charAt(current) == '"') {
-            current++; // Skip the closing quote
-        }
 
         return builder.toString();
     }
