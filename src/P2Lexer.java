@@ -37,6 +37,7 @@ public class P2Lexer implements  Iterable<P2Lexer.Token>{
                 case ';':
                     tokens.add(new Token(TokenType.ENDLINE,";"));
                     curr++;
+                    break;
                 case '=':
                     tokens.add(new Token(TokenType.ASSIGNMENT,"="));
                     curr++;
